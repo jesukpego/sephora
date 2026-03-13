@@ -102,13 +102,19 @@
 
         .mega-name {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(80px, 20vw, 240px);
-            font-weight: 900; font-style: italic;
+            font-size: 15vw; /* S'adapte à la largeur de l'écran */
+            font-weight: 900;
+            font-style: italic;
             background: linear-gradient(to bottom, #fff, #444);
-            -webkit-background-clip: text; background-clip: text;
+            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
-            line-height: 0.8;
-            z-index: 10;
+            line-height: 0.9;
+            text-align: center;
+            width: 100%;
+            max-width: 100vw;
+            display: block;
+            word-wrap: break-word; /* Force le texte à rester dans le cadre */
         }
 
         /* Style des têtes de fantômes colorés */
@@ -119,7 +125,7 @@
             height: 100px;
             opacity: 0.6; /* Transparence pour voir le texte */
             pointer-events: none;
-            filter: blur(2px);
+            filter: blur(1px) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
             z-index: 5;
         }
     </style>
