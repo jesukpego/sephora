@@ -18,7 +18,7 @@
 
         body, html {
             margin: 0; padding: 0;
-            width: 100vw; height: 100vh;
+            width: 100%; height: 100%;
             background: var(--dark-bg);
             color: var(--white-cold);
             font-family: 'Inter', sans-serif;
@@ -36,6 +36,7 @@
             position: absolute; inset: 0;
             display: flex; justify-content: center; align-items: center;
             z-index: 10;
+            width: 100%;
         }
 
         .card-wrapper {
@@ -44,6 +45,7 @@
             transform-style: preserve-3d;
         }
 
+        /* RESPONSIVE CARD */
         .glass-premium {
             width: 260px; height: 260px;
             background: rgba(10, 10, 10, 0.8);
@@ -54,6 +56,7 @@
             display: flex; justify-content: center; align-items: center;
             box-shadow: 0 50px 100px rgba(0, 0, 0, 1);
             z-index: 5;
+            transition: all 0.3s ease;
         }
 
         .s-logo {
@@ -63,8 +66,9 @@
             -webkit-text-fill-color: transparent;
         }
 
+        /* RESPONSIVE HANDS */
         .hand {
-            position: absolute; width: 450px;
+            position: absolute; width: 40%; max-width: 450px;
             z-index: 20; opacity: 0;
             fill: #080808; stroke: rgba(255, 255, 255, 0.02);
             pointer-events: none;
@@ -74,23 +78,34 @@
 
         .glitch-btn {
             position: absolute; bottom: 10vh;
-            padding: 20px 60px;
+            padding: 15px 40px;
             background: transparent;
             border: 1px solid var(--sephora-dark-pink);
             color: var(--white-cold);
             font-family: 'Space Mono', monospace;
             font-weight: 700;
-            letter-spacing: 6px;
+            letter-spacing: 4px;
             cursor: pointer; z-index: 100;
             text-transform: uppercase;
             transition: all 0.4s ease;
-        }
-        .glitch-btn:hover {
-            background: var(--sephora-dark-pink);
-            box-shadow: 0 0 50px rgba(74, 0, 26, 0.5);
+            font-size: 0.8rem;
         }
 
-        /* --- PAGE FINALE AVEC FANTÔMES --- */
+        /* --- MEDIA QUERIES MOBILE --- */
+        @media (max-width: 768px) {
+            .glass-premium {
+                width: 180px; height: 180px;
+                border-radius: 30px;
+            }
+            .s-logo { font-size: 100px; }
+            .hand { width: 35%; }
+            .glitch-btn { padding: 12px 25px; letter-spacing: 2px; font-size: 0.7rem; }
+            
+            .mega-name { font-size: 22vw !important; }
+            .final-page p { font-size: 1.2rem !important; }
+        }
+
+        /* --- PAGE FINALE --- */
         .final-page {
             position: fixed; inset: 0;
             background: black;
@@ -98,11 +113,13 @@
             justify-content: center; align-items: center;
             opacity: 0; visibility: hidden; z-index: 200;
             overflow: hidden;
+            padding: 20px;
+            text-align: center;
         }
 
         .mega-name {
             font-family: 'Playfair Display', serif;
-            font-size: 15vw; /* S'adapte à la largeur de l'écran */
+            font-size: 15vw;
             font-weight: 900;
             font-style: italic;
             background: linear-gradient(to bottom, #fff, #444);
@@ -110,20 +127,16 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 0.9;
-            text-align: center;
             width: 100%;
-            max-width: 100vw;
             display: block;
-            word-wrap: break-word; /* Force le texte à rester dans le cadre */
         }
 
-        /* Style des têtes de fantômes colorés */
         .ghost {
             position: absolute;
             bottom: -150px;
-            width: 80px;
-            height: 100px;
-            opacity: 0.6; /* Transparence pour voir le texte */
+            width: 60px;
+            height: 80px;
+            opacity: 0.6;
             pointer-events: none;
             filter: blur(1px) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
             z-index: 5;
@@ -132,9 +145,7 @@
 </head>
 
 <body>
-
     <div id="webgl-container"></div>
-
     <button id="startBtn" class="glitch-btn">DÉBLOQUER L'EXPÉRIENCE</button>
 
     <div id="scene">
@@ -144,7 +155,9 @@
                 <rect x="140" y="90" width="40" height="20" rx="10" />
                 <rect x="140" y="120" width="40" height="20" rx="10" />
             </svg>
+            
             <div class="glass-premium"><div class="s-logo">S</div></div>
+            
             <svg class="hand hand-right" viewBox="0 0 200 200">
                 <path d="M10,100 Q40,80 80,100 T150,110 L150,140 Q100,150 50,140 Z" />
                 <rect x="140" y="90" width="40" height="20" rx="10" />
@@ -154,7 +167,7 @@
     </div>
 
     <div class="final-page" id="finalPage">
-        <h3 style="letter-spacing: 15px; color: var(--cyan); font-size: 12px; margin-bottom: 20px; z-index:10;">L'ANNIVERSAIRE OBSCUR</h3>
+        <h3 class="sub-title" style="letter-spacing: 5px; color: var(--cyan); font-size: 10px; margin-bottom: 20px; z-index:10;">L'ANNIVERSAIRE OBSCUR</h3>
         <h2 class="mega-name">SEPHORA</h2>
         <p style="font-size: 1.8rem; margin-top: 40px; font-weight: 100; font-family: 'Playfair Display'; font-style: italic; z-index:10;">Joyeux Anniversaire...</p>
     </div>
@@ -163,21 +176,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
+        // --- INITIALISATION ---
         const anthem = new Audio('Sephora_s_Anthem.mp3');
         anthem.preload = 'auto';
 
-        // --- 1. FONCTION GÉNÉRATRICE DE FANTÔMES MULTICOLORES ---
         function createGhosts() {
             const finalPage = document.getElementById('finalPage');
-            const ghostColors = ['#ff0055', '#00f5ff', '#8a2be2', '#ff8c00']; // Palette de couleurs vives
+            const ghostColors = ['#ff0055', '#00f5ff', '#8a2be2', '#ff8c00'];
 
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 15; i++) { // Réduit un peu pour mobile perf
                 const ghost = document.createElement('div');
                 ghost.className = 'ghost';
-                const randomColorIndex = Math.floor(Math.random() * ghostColors.length);
-                const randomColor = ghostColors[randomColorIndex];
+                const randomColor = ghostColors[Math.floor(Math.random() * ghostColors.length)];
 
-                // SVG de tête de fantôme coloré
                 ghost.innerHTML = `
                     <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
                         <path d="M50 0C22.4 0 0 22.4 0 50V120L20 105L40 120L50 110L60 120L80 105L100 120V50C100 22.4 77.6 0 50 0Z" fill="${randomColor}"/>
@@ -188,31 +199,22 @@
                 `;
                 finalPage.appendChild(ghost);
 
-                // Position et animation aléatoires
-                const randomX = Math.random() * 100;
-                const randomSize = 40 + Math.random() * 120; // Tailles variées
-                const randomDelay = Math.random() * 5;
-                const randomDuration = 10 + Math.random() * 15; // Vitesses variées
-
+                const randomX = Math.random() * 90;
+                const randomSize = 30 + Math.random() * 80;
                 ghost.style.left = randomX + '%';
                 ghost.style.width = randomSize + 'px';
 
-                // Animation infinie du bas vers le haut
                 gsap.to(ghost, {
                     y: -window.innerHeight - 300,
-                    duration: randomDuration,
-                    delay: randomDelay,
+                    duration: 8 + Math.random() * 10,
+                    delay: Math.random() * 5,
                     repeat: -1,
-                    ease: "none",
-                    onRepeat: () => {
-                        ghost.style.left = Math.random() * 100 + '%';
-                    }
+                    ease: "none"
                 });
 
-                // Flottement latéral sineux
                 gsap.to(ghost, {
-                    x: 60,
-                    duration: 2.5 + Math.random() * 2.5,
+                    x: 40,
+                    duration: 2 + Math.random() * 2,
                     repeat: -1,
                     yoyo: true,
                     ease: "sine.inOut"
@@ -220,59 +222,61 @@
             }
         }
 
-        // --- 2. THREE.JS BACKGROUND ---
+        // --- THREE.JS ---
         const scene3d = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         document.getElementById('webgl-container').appendChild(renderer.domElement);
 
         const geo = new THREE.BufferGeometry();
-        const pts = new Float32Array(2000 * 3);
-        for (let i = 0; i < 6000; i++) pts[i] = (Math.random() - 0.5) * 10;
+        const pts = new Float32Array(1500 * 3);
+        for (let i = 0; i < 4500; i++) pts[i] = (Math.random() - 0.5) * 10;
         geo.setAttribute('position', new THREE.BufferAttribute(pts, 3));
-        const mat = new THREE.PointsMaterial({ size: 0.015, color: '#444', transparent: true, opacity: 0.5 });
+        const mat = new THREE.PointsMaterial({ size: 0.02, color: '#444', transparent: true, opacity: 0.5 });
         const cloud = new THREE.Points(geo, mat);
         scene3d.add(cloud);
         camera.position.z = 5;
 
         function render() {
             requestAnimationFrame(render);
-            cloud.rotation.y += 0.0005;
+            cloud.rotation.y += 0.0007;
             renderer.render(scene3d, camera);
         }
         render();
 
-        // --- 3. L'EXPÉRIENCE ---
+        // --- ACTIONS ---
         document.getElementById('startBtn').addEventListener('click', () => {
-            anthem.play().catch(e => console.log("Audio play blocked", e));
-
+            anthem.play().catch(() => {});
             const tl = gsap.timeline();
 
-            tl.to("#startBtn", { y: 50, opacity: 0, duration: 0.5, onComplete: () => {
+            tl.to("#startBtn", { y: 30, opacity: 0, duration: 0.4, onComplete: () => {
                 document.getElementById('startBtn').remove();
-                createGhosts(); // Lancement des fantômes après le clic
+                createGhosts();
             }});
 
-            tl.to(".hand-left", { xPercent: 105, opacity: 1, duration: 1.2, ease: "elastic.out(1, 0.7)" }, 0.2)
-                .to(".hand-right", { xPercent: -105, opacity: 1, duration: 1.2, ease: "elastic.out(1, 0.7)" }, 0.2);
+            tl.to(".hand-left", { xPercent: 95, opacity: 1, duration: 1, ease: "back.out(1.2)" }, 0.1)
+              .to(".hand-right", { xPercent: -95, opacity: 1, duration: 1, ease: "back.out(1.2)" }, 0.1);
 
             tl.to(".card-wrapper", {
-                scale: 45,
-                z: 2500,
+                scale: 50,
+                z: 2000,
                 opacity: 0,
-                duration: 2.2,
-                ease: "power4.inOut"
-            }, 1.5);
+                duration: 2,
+                ease: "power4.in"
+            }, 1.2);
 
-            tl.to("#finalPage", { autoAlpha: 1, duration: 1.2 }, 2.5);
-            tl.from(".mega-name", { letterSpacing: "-30px", opacity: 0, duration: 2, ease: "expo.out" }, 2.8);
+            tl.to("#finalPage", { autoAlpha: 1, duration: 1 }, 2);
+            tl.from(".mega-name", { letterSpacing: "-20px", opacity: 0, duration: 1.5, ease: "expo.out" }, 2.2);
         });
 
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            camera.aspect = w / h;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setSize(w, h);
         });
     </script>
 </body>
